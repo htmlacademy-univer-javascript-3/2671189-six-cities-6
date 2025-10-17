@@ -1,60 +1,66 @@
-type OfferCardProps = {
-  isPremium?: boolean;
-  isFavorite?: boolean;
-  image: string;
-  price: number;
-  rating: number;
-  title: string;
-  type: string;
-};
+import { Link } from 'react-router-dom';
+import { Offer } from '../../mocks/offers';
 
-function OfferCard({
-  isPremium = false,
-  isFavorite = false,
-  image,
-  price,
-  rating,
-  title,
-  type
-}: OfferCardProps): JSX.Element {
+type OfferCardProps = {
+  offer: Offer;
+  onMouseEnter?: (id: string) => void;
+  onMouseLeave?: () => void;
+}
+
+function OfferCard({ offer, onMouseEnter, onMouseLeave, isActive }: OfferCardProps & { isActive: boolean }): JSX.Element {
+  const handleMouseEnter = () => {
+    onMouseEnter?.(offer.id);
+  };
+
   return (
-    <article className="cities__card place-card">
-      {isPremium && (
+    <article
+      className="cities__card place-card"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={{ opacity: isActive ? 1 : 0.6 }}
+    >
+      {offer.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <a href="#">
-          <img className="place-card__image" src={image} width="260" height="200" alt="Place image" />
-        </a>
+        <Link to={`/offer/${offer.id}`}>
+          <img
+            className="place-card__image"
+            src={offer.previewImage}
+            width="260"
+            height="200"
+            alt="Place image"
+          />
+        </Link>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">&euro;{price}</b>
+            <b className="place-card__price-value">&euro;{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`}
+            className={`place-card__bookmark-button button ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
-            <span className="visually-hidden">{isFavorite ? 'In bookmarks' : 'To bookmarks'}</span>
+            <span className="visually-hidden">{offer.isFavorite ? 'In bookmarks' : 'To bookmarks'}</span>
           </button>
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: `${rating * 20}%` }}></span>
+            <span style={{ width: `${offer.rating * 20}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{title}</a>
+          <Link to={`/offer/${offer.id}`}>{offer.title}</Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{offer.type}</p>
       </div>
     </article>
   );
