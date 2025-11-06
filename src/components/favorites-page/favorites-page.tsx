@@ -1,5 +1,7 @@
+
 import { Link } from 'react-router-dom';
 import { Offer } from '../../mocks/offers';
+import { AppRoute } from '../../const';
 
 type FavoritesPageProps = {
   offers: Offer[];
@@ -23,7 +25,7 @@ function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <Link className="header__logo-link" to="/">
+              <Link className="header__logo-link" to={AppRoute.Main}>
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
               </Link>
             </div>
@@ -118,7 +120,7 @@ function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
         </div>
       </main>
       <footer className="footer container">
-        <Link className="footer__logo-link" to="/">
+        <Link className="footer__logo-link" to={AppRoute.Main}>
           <img className="footer__logo" src="img/logo.svg" alt="6 cities logo" width="64" height="33" />
         </Link>
       </footer>

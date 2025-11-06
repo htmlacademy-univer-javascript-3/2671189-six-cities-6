@@ -6,6 +6,7 @@ import OfferPage from './components/offer-page/offer-page';
 import NotFoundPage from './components/not-found-page/not-found-page';
 import PrivateRoute from './components/private-route/private-route';
 import { Offer } from './mocks/offers';
+import { AppRoute } from './const';
 
 type AppProps = {
   offers: Offer[];
@@ -16,15 +17,15 @@ function App({ offers }: AppProps): JSX.Element {
     <BrowserRouter>
       <Routes>
         <Route
-          path="/"
+          path={AppRoute.Main}
           element={<MainPage offers={offers} />}
         />
         <Route
-          path="/login"
+          path={AppRoute.Login}
           element={<LoginPage />}
         />
         <Route
-          path="/favorites"
+          path={AppRoute.Favorites}
           element={
             <PrivateRoute>
               <FavoritesPage offers={offers} />
@@ -32,7 +33,7 @@ function App({ offers }: AppProps): JSX.Element {
           }
         />
         <Route
-          path="/offer/:id"
+          path={AppRoute.Offer}
           element={<OfferPage offers={offers} />}
         />
         <Route
