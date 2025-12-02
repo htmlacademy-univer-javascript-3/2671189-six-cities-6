@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { useEffect } from 'react';
 import MainPage from './components/main-page/main-page';
 import LoginPage from './components/login-page/login-page';
 import FavoritesPage from './components/favorites-page/favorites-page';
