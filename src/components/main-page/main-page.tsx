@@ -1,8 +1,4 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import OfferCard from '../offer-card/offer-card';
-import SortOptions from '../sort-options/sort-options';
-import CitiesList from '../cities-list/cities-list';
+import OffersList from '../offers-list/offers-list';
 import Map from '../map/map';
 import { Offer } from '../../mocks/offers';
 import { RootState } from '../../store';
@@ -13,13 +9,8 @@ type MainPageProps = {
 }
 
 function MainPage({ offers }: MainPageProps): JSX.Element {
-  const city = useSelector((state: RootState) => state.city);
-  const sortType = useSelector((state: RootState) => state.sortType);
-  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
-  
-  const filteredOffers = offers.filter((offer) => offer.city.name === city);
-  const sortedOffers = sortOffers(filteredOffers, sortType);
-  const cityLocation = sortedOffers[0]?.city.location;
+  const placesCount = offers.length;
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -62,28 +53,28 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{sortedOffers.length} places to stay in {city}</b>
-              <SortOptions currentSort={sortType} />
-              <div className="cities__places-list places__list tabs__content">
-                {sortedOffers.map((offer) => (
-                  <OfferCard
-                    key={offer.id}
-                    id={offer.id}
-                    isPremium={offer.isPremium}
-                    isFavorite={offer.isFavorite}
-                    image={offer.previewImage}
-                    price={offer.price}
-                    rating={offer.rating}
-                    title={offer.title}
-                    type={offer.type}
-                    onMouseEnter={() => setActiveOfferId(offer.id)}
-                    onMouseLeave={() => setActiveOfferId(null)}
-                  />
-                ))}
-              </div>
+              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+              <form className="places__sorting" action="#" method="get">
+                <span className="places__sorting-caption">Sort by</span>
+                <span className="places__sorting-type" tabIndex={0}>
+                  Popular
+                  <svg className="places__sorting-arrow" width="7" height="4">
+                    <use xlinkHref="#icon-arrow-select"></use>
+                  </svg>
+                </span>
+                <ul className="places__options places__options--custom places__options--opened">
+                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
+                  <li className="places__option" tabIndex={0}>Price: low to high</li>
+                  <li className="places__option" tabIndex={0}>Price: high to low</li>
+                  <li className="places__option" tabIndex={0}>Top rated first</li>
+                </ul>
+              </form>
+              <OffersList offers={offers} />
             </section>
             <div className="cities__right-section">
-              {cityLocation && <Map offers={sortedOffers} center={cityLocation} activeOfferId={activeOfferId} />}
+              <section className="cities__map map">
+                <Map offers={offers} />
+              </section>
             </div>
           </div>
         </div>
