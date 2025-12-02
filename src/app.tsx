@@ -9,12 +9,18 @@ import NotFoundPage from './components/not-found-page/not-found-page';
 import PrivateRoute from './components/private-route/private-route';
 import { Offer } from './mocks/offers';
 import { AppRoute } from './const';
+import { store } from './store';
+import { fillOffers } from './store/action';
 
 type AppProps = {
   offers: Offer[];
 }
 
 function App({ offers }: AppProps): JSX.Element {
+  useEffect(() => {
+    store.dispatch(fillOffers(offers));
+  }, [offers]);
+
   return (
     <BrowserRouter>
       <Routes>

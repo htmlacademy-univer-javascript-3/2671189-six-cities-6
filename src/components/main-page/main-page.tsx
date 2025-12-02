@@ -1,6 +1,8 @@
 import OffersList from '../offers-list/offers-list';
 import Map from '../map/map';
 import { Offer } from '../../mocks/offers';
+import { RootState } from '../../store';
+import { sortOffers } from '../../utils/sort';
 
 type MainPageProps = {
   offers: Offer[];

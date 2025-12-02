@@ -16,6 +16,7 @@ type MapProps = {
     longitude: number;
     zoom: number;
   };
+  activeOfferId?: string | null;
 };
 
 // Create custom icon
