@@ -45,7 +45,9 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
               </section>
             </div>
           </div>
-          <section className="offer__map map"></section>
+          <section className="offer__map map" style={{ height: '579px' }}>
+            <Map offers={nearbyOffers} center={offer.city.location} />
+          </section>
         </section>
 
         <div className="container">
