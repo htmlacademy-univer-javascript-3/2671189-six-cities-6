@@ -1,11 +1,25 @@
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import OfferCard from '../offer-card/offer-card';
+import SortOptions from '../sort-options/sort-options';
+import CitiesList from '../cities-list/cities-list';
+import Map from '../map/map';
 import { Offer } from '../../mocks/offers';
+import { RootState } from '../../store';
+import { sortOffers } from '../../utils/sort';
 
 type MainPageProps = {
   offers: Offer[];
 }
 
 function MainPage({ offers }: MainPageProps): JSX.Element {
+  const city = useSelector((state: RootState) => state.city);
+  const sortType = useSelector((state: RootState) => state.sortType);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  
+  const filteredOffers = offers.filter((offer) => offer.city.name === city);
+  const sortedOffers = sortOffers(filteredOffers, sortType);
+  const cityLocation = sortedOffers[0]?.city.location;
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -41,104 +55,35 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
+            <CitiesList currentCity={city} />
           </section>
         </div>
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom places__options--opened">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
+              <b className="places__found">{sortedOffers.length} places to stay in {city}</b>
+              <SortOptions currentSort={sortType} />
               <div className="cities__places-list places__list tabs__content">
-                <OfferCard
-                  isPremium
-                  image="img/apartment-01.jpg"
-                  price={120}
-                  rating={4}
-                  title="Beautiful &amp; luxurious apartment at great location"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isFavorite
-                  image="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title="Wood and stone place"
-                  type="Room"
-                />
-                <OfferCard
-                  image="img/apartment-02.jpg"
-                  price={132}
-                  rating={4}
-                  title="Canal View Prinsengracht"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isPremium
-                  image="img/apartment-03.jpg"
-                  price={180}
-                  rating={5}
-                  title="Nice, cozy, warm big bed apartment"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isFavorite
-                  image="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title="Wood and stone place"
-                  type="Room"
-                />
+                {sortedOffers.map((offer) => (
+                  <OfferCard
+                    key={offer.id}
+                    id={offer.id}
+                    isPremium={offer.isPremium}
+                    isFavorite={offer.isFavorite}
+                    image={offer.previewImage}
+                    price={offer.price}
+                    rating={offer.rating}
+                    title={offer.title}
+                    type={offer.type}
+                    onMouseEnter={() => setActiveOfferId(offer.id)}
+                    onMouseLeave={() => setActiveOfferId(null)}
+                  />
+                ))}
               </div>
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              {cityLocation && <Map offers={sortedOffers} center={cityLocation} activeOfferId={activeOfferId} />}
             </div>
           </div>
         </div>

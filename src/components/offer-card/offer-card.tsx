@@ -1,4 +1,5 @@
 type OfferCardProps = {
+  id?: string;
   isPremium?: boolean;
   isFavorite?: boolean;
   image: string;
@@ -6,19 +7,28 @@ type OfferCardProps = {
   rating: number;
   title: string;
   type: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 };
 
 function OfferCard({
+  id,
   isPremium = false,
   isFavorite = false,
   image,
   price,
   rating,
   title,
-  type
+  type,
+  onMouseEnter,
+  onMouseLeave
 }: OfferCardProps): JSX.Element {
   return (
-    <article className="cities__card place-card">
+    <article 
+      className="cities__card place-card"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
