@@ -1,4 +1,5 @@
-import OfferCard from '../offer-card/offer-card';
+import OffersList from '../offers-list/offers-list';
+import Map from '../map/map';
 import { Offer } from '../../mocks/offers';
 
 type MainPageProps = {
@@ -6,6 +7,8 @@ type MainPageProps = {
 }
 
 function MainPage({ offers }: MainPageProps): JSX.Element {
+  const placesCount = offers.length;
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -95,50 +98,12 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <div className="cities__places-list places__list tabs__content">
-                <OfferCard
-                  isPremium
-                  image="img/apartment-01.jpg"
-                  price={120}
-                  rating={4}
-                  title="Beautiful &amp; luxurious apartment at great location"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isFavorite
-                  image="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title="Wood and stone place"
-                  type="Room"
-                />
-                <OfferCard
-                  image="img/apartment-02.jpg"
-                  price={132}
-                  rating={4}
-                  title="Canal View Prinsengracht"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isPremium
-                  image="img/apartment-03.jpg"
-                  price={180}
-                  rating={5}
-                  title="Nice, cozy, warm big bed apartment"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isFavorite
-                  image="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title="Wood and stone place"
-                  type="Room"
-                />
-              </div>
+              <OffersList offers={offers} />
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <section className="cities__map map">
+                <Map offers={offers} />
+              </section>
             </div>
           </div>
         </div>

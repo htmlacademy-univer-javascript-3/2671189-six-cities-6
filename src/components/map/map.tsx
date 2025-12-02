@@ -2,6 +2,11 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+// Import marker images so the bundler finds them
+import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2xUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
 import { Offer } from '../../mocks/offers';
 
 type MapProps = {
@@ -18,11 +23,11 @@ function Map({ offers, center }: MapProps): JSX.Element {
   const leafletMapRef = useRef<L.Map | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
 
-  // Configure default icon paths using CDN URLs
+  // Configure default icon paths
   L.Icon.Default.mergeOptions({
-    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconUrl: markerIconUrl as string,
+    iconRetinaUrl: markerIcon2xUrl as string,
+    shadowUrl: markerShadowUrl as string,
   });
 
   useEffect(() => {
@@ -65,9 +70,7 @@ function Map({ offers, center }: MapProps): JSX.Element {
   // Update markers when offers change
   useEffect(() => {
     const map = leafletMapRef.current;
-    if (!map || !markersLayerRef.current) {
-      return;
-    }
+    if (!map || !markersLayerRef.current) return;
 
     markersLayerRef.current.clearLayers();
 

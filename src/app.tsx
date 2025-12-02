@@ -5,7 +5,7 @@ import FavoritesPage from './components/favorites-page/favorites-page';
 import OfferPage from './components/offer-page/offer-page';
 import NotFoundPage from './components/not-found-page/not-found-page';
 import PrivateRoute from './components/private-route/private-route';
-import { Offer, mockOffers } from './mocks/offers';
+import { Offer } from './mocks/offers';
 import { AppRoute } from './const';
 
 type AppProps = {
@@ -26,7 +26,7 @@ function App({ offers }: AppProps): JSX.Element {
         />
         <Route
           path={AppRoute.Favorites}
-          element={{
+          element={
             <PrivateRoute>
               <FavoritesPage offers={offers} />
             </PrivateRoute>

@@ -1,25 +1,21 @@
-export type City = {
-  name: string;
-  location: {
-    latitude: number;
-    longitude: number;
-    zoom: number;
-  };
-};
-
-export type Location = {
-  latitude: number;
-  longitude: number;
-  zoom: number;
-};
-
 export type Offer = {
   id: string;
   title: string;
   type: string;
   price: number;
-  city: City;
-  location: Location;
+  city: {
+    name: string;
+    location: {
+      latitude: number;
+      longitude: number;
+      zoom: number;
+    };
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  };
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
@@ -29,8 +25,8 @@ export type Offer = {
 export const mockOffers: Offer[] = [
   {
     id: '1',
-    title: 'Beautiful & luxurious studio at great location',
-    type: 'Apartment',
+    title: 'Beautiful & luxurious apartment at great location',
+    type: 'apartment',
     price: 120,
     city: {
       name: 'Amsterdam',
@@ -45,15 +41,15 @@ export const mockOffers: Offer[] = [
       longitude: 4.85309666406198,
       zoom: 16
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
-    rating: 4,
+    rating: 4.8,
     previewImage: 'img/apartment-01.jpg'
   },
   {
     id: '2',
     title: 'Wood and stone place',
-    type: 'Room',
+    type: 'room',
     price: 80,
     city: {
       name: 'Amsterdam',
@@ -68,15 +64,15 @@ export const mockOffers: Offer[] = [
       longitude: 4.85309666406198,
       zoom: 16
     },
-    isFavorite: true,
+    isFavorite: false,
     isPremium: false,
-    rating: 4,
+    rating: 4.2,
     previewImage: 'img/room.jpg'
   },
   {
     id: '3',
     title: 'Canal View Prinsengracht',
-    type: 'Apartment',
+    type: 'apartment',
     price: 132,
     city: {
       name: 'Amsterdam',
@@ -93,13 +89,13 @@ export const mockOffers: Offer[] = [
     },
     isFavorite: false,
     isPremium: false,
-    rating: 4,
+    rating: 4.7,
     previewImage: 'img/apartment-02.jpg'
   },
   {
     id: '4',
     title: 'Nice, cozy, warm big bed apartment',
-    type: 'Apartment',
+    type: 'apartment',
     price: 180,
     city: {
       name: 'Amsterdam',
@@ -114,9 +110,9 @@ export const mockOffers: Offer[] = [
       longitude: 4.939309666406198,
       zoom: 16
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
-    rating: 5,
+    rating: 5.0,
     previewImage: 'img/apartment-03.jpg'
   }
 ];
