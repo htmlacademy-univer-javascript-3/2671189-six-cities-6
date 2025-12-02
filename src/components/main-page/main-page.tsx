@@ -1,10 +1,16 @@
+import { useSelector } from 'react-redux';
 import OfferCard from '../offer-card/offer-card';
+import CitiesList from '../cities-list/cities-list';
+import Map from '../map/map';
+import { RootState } from '../../store';
 
-type MainPageProps = {
-  placesCount: number;
-}
+function MainPage(): JSX.Element {
+  const city = useSelector((state: RootState) => state.city);
+  const offers = useSelector((state: RootState) => state.offers);
 
-function MainPage({ placesCount }: MainPageProps): JSX.Element {
+  const filteredOffers = offers.filter((offer) => offer.city.name === city);
+  const cityLocation = filteredOffers[0]?.city.location;
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -40,45 +46,14 @@ function MainPage({ placesCount }: MainPageProps): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
+            <CitiesList currentCity={city} />
           </section>
         </div>
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{placesCount} places to stay in Amsterdam</b>
+              <b className="places__found">{filteredOffers.length} places to stay in {city}</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0}>
@@ -95,49 +70,22 @@ function MainPage({ placesCount }: MainPageProps): JSX.Element {
                 </ul>
               </form>
               <div className="cities__places-list places__list tabs__content">
-                <OfferCard
-                  isPremium
-                  image="img/apartment-01.jpg"
-                  price={120}
-                  rating={4}
-                  title="Beautiful &amp; luxurious apartment at great location"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isFavorite
-                  image="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title="Wood and stone place"
-                  type="Room"
-                />
-                <OfferCard
-                  image="img/apartment-02.jpg"
-                  price={132}
-                  rating={4}
-                  title="Canal View Prinsengracht"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isPremium
-                  image="img/apartment-03.jpg"
-                  price={180}
-                  rating={5}
-                  title="Nice, cozy, warm big bed apartment"
-                  type="Apartment"
-                />
-                <OfferCard
-                  isFavorite
-                  image="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title="Wood and stone place"
-                  type="Room"
-                />
+                {filteredOffers.map((offer) => (
+                  <OfferCard
+                    key={offer.id}
+                    isPremium={offer.isPremium}
+                    isFavorite={offer.isFavorite}
+                    image={offer.previewImage}
+                    price={offer.price}
+                    rating={offer.rating}
+                    title={offer.title}
+                    type={offer.type}
+                  />
+                ))}
               </div>
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              {cityLocation && <Map offers={filteredOffers} center={cityLocation} />}
             </div>
           </div>
         </div>
