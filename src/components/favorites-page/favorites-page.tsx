@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom';
+import { Offer } from '../../mocks/offers';
 
-function FavoritesPage(): JSX.Element {
+type FavoritesPageProps = {
+  offers: Offer[];
+}
+
+function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
   return (
     <div className="page">
       <header className="header">
