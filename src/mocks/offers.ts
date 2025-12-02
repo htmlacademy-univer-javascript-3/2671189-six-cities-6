@@ -1,25 +1,21 @@
-export type City = {
-  name: string;
-  location: {
-    latitude: number;
-    longitude: number;
-    zoom: number;
-  };
-};
-
-export type Location = {
-  latitude: number;
-  longitude: number;
-  zoom: number;
-};
-
 export type Offer = {
   id: string;
   title: string;
   type: string;
   price: number;
-  city: City;
-  location: Location;
+  city: {
+    name: string;
+    location: {
+      latitude: number;
+      longitude: number;
+      zoom: number;
+    };
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  };
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
@@ -30,149 +26,8 @@ export const mockOffers: Offer[] = [
   // Paris
   {
     id: '1',
-    title: 'Charming studio in the heart of Paris',
-    type: 'Apartment',
-    price: 150,
-    city: {
-      name: 'Paris',
-      location: {
-        latitude: 48.8566,
-        longitude: 2.3522,
-        zoom: 13
-      }
-    },
-    location: {
-      latitude: 48.8566,
-      longitude: 2.3522,
-      zoom: 16
-    },
-    isFavorite: false,
-    isPremium: true,
-    rating: 4.5,
-    previewImage: 'img/apartment-01.jpg'
-  },
-  {
-    id: '2',
-    title: 'Cozy room near Eiffel Tower',
-    type: 'Room',
-    price: 90,
-    city: {
-      name: 'Paris',
-      location: {
-        latitude: 48.8566,
-        longitude: 2.3522,
-        zoom: 13
-      }
-    },
-    location: {
-      latitude: 48.8606,
-      longitude: 2.3376,
-      zoom: 16
-    },
-    isFavorite: false,
-    isPremium: false,
-    rating: 4,
-    previewImage: 'img/room.jpg'
-  },
-  // Cologne
-  {
-    id: '3',
-    title: 'Modern loft in Cologne',
-    type: 'Apartment',
-    price: 110,
-    city: {
-      name: 'Cologne',
-      location: {
-        latitude: 50.9375,
-        longitude: 6.9603,
-        zoom: 13
-      }
-    },
-    location: {
-      latitude: 50.9375,
-      longitude: 6.9603,
-      zoom: 16
-    },
-    isFavorite: false,
-    isPremium: false,
-    rating: 4.2,
-    previewImage: 'img/apartment-02.jpg'
-  },
-  {
-    id: '4',
-    title: 'Spacious apartment near cathedral',
-    type: 'Apartment',
-    price: 140,
-    city: {
-      name: 'Cologne',
-      location: {
-        latitude: 50.9375,
-        longitude: 6.9603,
-        zoom: 13
-      }
-    },
-    location: {
-      latitude: 50.9415,
-      longitude: 6.9583,
-      zoom: 16
-    },
-    isFavorite: true,
-    isPremium: true,
-    rating: 4.8,
-    previewImage: 'img/apartment-03.jpg'
-  },
-  // Brussels
-  {
-    id: '5',
-    title: 'Beautiful studio in Brussels',
-    type: 'Apartment',
-    price: 120,
-    city: {
-      name: 'Brussels',
-      location: {
-        latitude: 50.8503,
-        longitude: 4.3517,
-        zoom: 13
-      }
-    },
-    location: {
-      latitude: 50.8503,
-      longitude: 4.3517,
-      zoom: 16
-    },
-    isFavorite: false,
-    isPremium: false,
-    rating: 4.3,
-    previewImage: 'img/apartment-01.jpg'
-  },
-  {
-    id: '6',
-    title: 'Cozy place in city center',
-    type: 'Room',
-    price: 85,
-    city: {
-      name: 'Brussels',
-      location: {
-        latitude: 50.8503,
-        longitude: 4.3517,
-        zoom: 13
-      }
-    },
-    location: {
-      latitude: 50.8463,
-      longitude: 4.3556,
-      zoom: 16
-    },
-    isFavorite: false,
-    isPremium: false,
-    rating: 4,
-    previewImage: 'img/room.jpg'
-  },
-  // Amsterdam
-  {
-    id: '7',
-    title: 'Beautiful & luxurious studio at great location',
-    type: 'Apartment',
+    title: 'Beautiful & luxurious apartment at great location',
+    type: 'apartment',
     price: 120,
     city: {
       name: 'Amsterdam',
@@ -187,15 +42,15 @@ export const mockOffers: Offer[] = [
       longitude: 4.85309666406198,
       zoom: 16
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
-    rating: 4,
+    rating: 4.8,
     previewImage: 'img/apartment-01.jpg'
   },
   {
     id: '8',
     title: 'Wood and stone place',
-    type: 'Room',
+    type: 'room',
     price: 80,
     city: {
       name: 'Amsterdam',
@@ -210,15 +65,15 @@ export const mockOffers: Offer[] = [
       longitude: 4.85309666406198,
       zoom: 16
     },
-    isFavorite: true,
+    isFavorite: false,
     isPremium: false,
-    rating: 4,
+    rating: 4.2,
     previewImage: 'img/room.jpg'
   },
   {
     id: '9',
     title: 'Canal View Prinsengracht',
-    type: 'Apartment',
+    type: 'apartment',
     price: 132,
     city: {
       name: 'Amsterdam',
@@ -235,13 +90,13 @@ export const mockOffers: Offer[] = [
     },
     isFavorite: false,
     isPremium: false,
-    rating: 4,
+    rating: 4.7,
     previewImage: 'img/apartment-02.jpg'
   },
   {
     id: '10',
     title: 'Nice, cozy, warm big bed apartment',
-    type: 'Apartment',
+    type: 'apartment',
     price: 180,
     city: {
       name: 'Amsterdam',
@@ -256,9 +111,9 @@ export const mockOffers: Offer[] = [
       longitude: 4.939309666406198,
       zoom: 16
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
-    rating: 5,
+    rating: 5.0,
     previewImage: 'img/apartment-03.jpg'
   },
   // Hamburg

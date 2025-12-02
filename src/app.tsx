@@ -7,46 +7,43 @@ import FavoritesPage from './components/favorites-page/favorites-page';
 import OfferPage from './components/offer-page/offer-page';
 import NotFoundPage from './components/not-found-page/not-found-page';
 import PrivateRoute from './components/private-route/private-route';
-import { mockOffers } from './mocks/offers';
-import { store } from './store';
-import { fillOffers } from './store/action';
+import { Offer } from './mocks/offers';
+import { AppRoute } from './const';
 
-function App(): JSX.Element {
-  useEffect(() => {
-    store.dispatch(fillOffers(mockOffers));
-  }, []);
+type AppProps = {
+  offers: Offer[];
+}
 
+function App({ offers }: AppProps): JSX.Element {
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={<MainPage />}
-          />
-          <Route
-            path="/login"
-            element={<LoginPage />}
-          />
-          <Route
-            path="/favorites"
-            element={
-              <PrivateRoute>
-                <FavoritesPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/offer/:id"
-            element={<OfferPage offers={mockOffers} />}
-          />
-          <Route
-            path="*"
-            element={<NotFoundPage />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </Provider>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path={AppRoute.Main}
+          element={<MainPage offers={offers} />}
+        />
+        <Route
+          path={AppRoute.Login}
+          element={<LoginPage />}
+        />
+        <Route
+          path={AppRoute.Favorites}
+          element={
+            <PrivateRoute>
+              <FavoritesPage offers={offers} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={AppRoute.Offer}
+          element={<OfferPage offers={offers} />}
+        />
+        <Route
+          path="*"
+          element={<NotFoundPage />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
