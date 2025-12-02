@@ -5,6 +5,7 @@ import FavoritesPage from './components/favorites-page/favorites-page';
 import OfferPage from './components/offer-page/offer-page';
 import NotFoundPage from './components/not-found-page/not-found-page';
 import PrivateRoute from './components/private-route/private-route';
+import { mockOffers } from './mocks/offers';
 
 type AppProps = {
   placesCount: number;
@@ -32,7 +33,7 @@ function App({ placesCount }: AppProps): JSX.Element {
         />
         <Route
           path="/offer/:id"
-          element={<OfferPage />}
+          element={<OfferPage offers={mockOffers} />}
         />
         <Route
           path="*"
