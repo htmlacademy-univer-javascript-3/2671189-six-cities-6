@@ -23,7 +23,6 @@ function OfferPage(): JSX.Element {
   // TODO: Get reviews from server in future modules
   const offerReviews: never[] = [];
 
->>>>>>> d6a7b80 (feat(module7-task1): integrate server data fetching with axios and redux-thunk)
   return (
     <div className="page">
       <header className="header">...</header>

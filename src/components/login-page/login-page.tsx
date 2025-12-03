@@ -1,7 +1,48 @@
-import { Link } from 'react-router-dom';
-import { AppRoute } from '../../const';
+import { FormEvent, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppDispatch, RootState } from '../../store';
+import { login } from '../../store/action';
 
 function LoginPage(): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      navigate(AppRoute.Main);
+    }
+  }, [authorizationStatus, navigate]);
+
+  const validatePassword = (pwd: string): boolean => {
+    const hasLetter = /[a-zA-Z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    return hasLetter && hasNumber;
+  };
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    setError('');
+
+    if (!validatePassword(password)) {
+      setError('Password must contain at least one letter and one number');
+      return;
+    }
+
+    dispatch(login({ email, password }))
+      .unwrap()
+      .then(() => {
+        navigate(AppRoute.Main);
+      })
+      .catch(() => {
+        setError('Invalid email or password');
+      });
+  };
   return (
     <div className="page page--gray page--login">
       <header className="header">
@@ -20,14 +61,35 @@ function LoginPage(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" action="#" method="post">
+            {error && (
+              <div style={{ color: 'red', marginBottom: '10px' }}>
+                {error}
+              </div>
+            )}
+            <form className="login__form form" action="#" method="post" onSubmit={handleSubmit}>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
-                <input className="login__input form__input" type="email" name="email" placeholder="Email" required />
+                <input
+                  className="login__input form__input"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">Password</label>
-                <input className="login__input form__input" type="password" name="password" placeholder="Password" required />
+                <input
+                  className="login__input form__input"
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <button className="login__submit form__submit button" type="submit">Sign in</button>
             </form>
