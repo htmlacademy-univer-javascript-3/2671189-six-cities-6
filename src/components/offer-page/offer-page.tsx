@@ -13,7 +13,7 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const offerDetails = useSelector((state: RootState) => state.offerDetails);
   const nearbyOffers = useSelector((state: RootState) => state.nearbyOffers);
   const comments = useSelector((state: RootState) => state.comments);

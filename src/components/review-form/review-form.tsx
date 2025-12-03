@@ -32,7 +32,7 @@ function ReviewForm({ offerId }: ReviewFormProps): JSX.Element {
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     setIsSubmitting(true);
-    
+
     dispatch(postComment({
       offerId,
       comment: formData.review,
