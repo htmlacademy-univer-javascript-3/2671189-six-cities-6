@@ -1,19 +1,29 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import ReviewsList from '../reviews-list/reviews-list';
 import ReviewForm from '../review-form/review-form';
-import { Offer } from '../../mocks/offers';
+import NearPlacesList from '../near-places-list/near-places-list';
+import Map from '../map/map';
+import { RootState } from '../../store';
 
-type OfferPageProps = {
-  offers: Offer[];
-}
-
-function OfferPage({ offers }: OfferPageProps): JSX.Element {
+function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const offers = useSelector((state: RootState) => state.offers);
   const offer = offers.find((o) => o.id === id);
 
   if (!offer) {
     return <div>Offer not found</div>;
   }
 
+  // Get nearby offers (same city, max 3)
+  const nearbyOffers = offers
+    .filter((o) => o.id !== offer.id && o.city.name === offer.city.name)
+    .slice(0, 3);
+
+  // TODO: Get reviews from server in future modules
+  const offerReviews: never[] = [];
+
+>>>>>>> d6a7b80 (feat(module7-task1): integrate server data fetching with axios and redux-thunk)
   return (
     <div className="page">
       <header className="header">...</header>
