@@ -9,5 +9,13 @@ export const createAPI = (): AxiosInstance => {
     timeout: REQUEST_TIMEOUT,
   });
 
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('six-cities-token');
+    if (token) {
+      config.headers['x-token'] = token;
+    }
+    return config;
+  });
+
   return api;
 };
