@@ -1,23 +1,38 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { changeCity, fillOffers } from './action';
-import { Offer } from '../mocks/offers';
+import { changeCity, changeSortType, fetchOffers } from './action';
+import { Offer } from '../types/offer';
+import { SortType } from '../const';
 
-type State = {
+export type State = {
   city: string;
   offers: Offer[];
+  sortType: SortType;
+  isOffersLoading: boolean;
 };
 
 const initialState: State = {
   city: 'Paris',
   offers: [],
+  sortType: SortType.Popular,
+  isOffersLoading: false,
 };
 
-export const reducer = createReducer(initialState, (builder) => {
+export const reducer = createReducer<State>(initialState, (builder) => {
   builder
     .addCase(changeCity, (state, action) => {
       state.city = action.payload;
     })
-    .addCase(fillOffers, (state, action) => {
+    .addCase(changeSortType, (state, action) => {
+      state.sortType = action.payload;
+    })
+    .addCase(fetchOffers.pending, (state) => {
+      state.isOffersLoading = true;
+    })
+    .addCase(fetchOffers.fulfilled, (state, action) => {
       state.offers = action.payload;
+      state.isOffersLoading = false;
+    })
+    .addCase(fetchOffers.rejected, (state) => {
+      state.isOffersLoading = false;
     });
 });

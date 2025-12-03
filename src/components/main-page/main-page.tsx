@@ -1,16 +1,21 @@
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import OffersList from '../offers-list/offers-list';
 import Map from '../map/map';
-import { Offer } from '../../mocks/offers';
+import Spinner from '../spinner/spinner';
 import { RootState } from '../../store';
 import { sortOffers } from '../../utils/sort';
 
-type MainPageProps = {
-  offers: Offer[];
-}
-
-function MainPage({ offers }: MainPageProps): JSX.Element {
-  const placesCount = offers.length;
-
+function MainPage(): JSX.Element {
+  const city = useSelector((state: RootState) => state.city);
+  const offers = useSelector((state: RootState) => state.offers);
+  const sortType = useSelector((state: RootState) => state.sortType);
+  const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  
+  const filteredOffers = offers.filter((offer) => offer.city.name === city);
+  const sortedOffers = sortOffers(filteredOffers, sortType);
+  const cityLocation = sortedOffers[0]?.city.location;
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -50,6 +55,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
           </section>
         </div>
         <div className="cities">
+<<<<<<< HEAD
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
@@ -75,8 +81,39 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               <section className="cities__map map">
                 <Map offers={offers} />
               </section>
+=======
+          {isOffersLoading ? (
+            <Spinner />
+          ) : (
+            <div className="cities__places-container container">
+              <section className="cities__places places">
+                <h2 className="visually-hidden">Places</h2>
+                <b className="places__found">{sortedOffers.length} places to stay in {city}</b>
+                <SortOptions currentSort={sortType} />
+                <div className="cities__places-list places__list tabs__content">
+                  {sortedOffers.map((offer) => (
+                    <OfferCard
+                      key={offer.id}
+                      id={offer.id}
+                      isPremium={offer.isPremium}
+                      isFavorite={offer.isFavorite}
+                      image={offer.previewImage}
+                      price={offer.price}
+                      rating={offer.rating}
+                      title={offer.title}
+                      type={offer.type}
+                      onMouseEnter={() => setActiveOfferId(offer.id)}
+                      onMouseLeave={() => setActiveOfferId(null)}
+                    />
+                  ))}
+                </div>
+              </section>
+              <div className="cities__right-section">
+                {cityLocation && <Map offers={sortedOffers} center={cityLocation} activeOfferId={activeOfferId} />}
+              </div>
+>>>>>>> d6a7b80 (feat(module7-task1): integrate server data fetching with axios and redux-thunk)
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>

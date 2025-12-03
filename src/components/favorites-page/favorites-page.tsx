@@ -1,17 +1,15 @@
 
 import { Link } from 'react-router-dom';
-import { Offer } from '../../mocks/offers';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import { AppRoute } from '../../const';
 
-type FavoritesPageProps = {
-  offers: Offer[];
-}
-
-function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
+function FavoritesPage(): JSX.Element {
+  const offers = useSelector((state: RootState) => state.offers);
   const favoriteOffers = offers.filter((offer) => offer.isFavorite);
 
   // Group favorites by city
-  const favoritesByCity: { [city: string]: Offer[] } = {};
+  const favoritesByCity: { [city: string]: typeof offers } = {};
   favoriteOffers.forEach((offer) => {
     if (!favoritesByCity[offer.city.name]) {
       favoritesByCity[offer.city.name] = [];
