@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { changeCity, changeSortType, fetchOffers, checkAuth, login, logout, requireAuthorization } from './action';
-import { Offer } from '../types/offer';
+import { changeCity, changeSortType, fetchOffers, checkAuth, login, logout, requireAuthorization, fetchOfferDetails, fetchNearbyOffers, fetchComments, postComment } from './action';
+import { Offer, OfferDetailed, Review } from '../types/offer';
 import { AuthorizationStatus, SortType } from '../const';
 
 export type State = {
@@ -10,6 +10,10 @@ export type State = {
   isOffersLoading: boolean;
   authorizationStatus: AuthorizationStatus;
   userEmail: string | null;
+  offerDetails: OfferDetailed | null;
+  nearbyOffers: Offer[];
+  comments: Review[];
+  isOfferLoading: boolean;
 };
 
 const initialState: State = {
@@ -19,6 +23,10 @@ const initialState: State = {
   isOffersLoading: false,
   authorizationStatus: AuthorizationStatus.Unknown,
   userEmail: null,
+  offerDetails: null,
+  nearbyOffers: [],
+  comments: [],
+  isOfferLoading: false,
 };
 
 export const reducer = createReducer<State>(initialState, (builder) => {
@@ -59,5 +67,25 @@ export const reducer = createReducer<State>(initialState, (builder) => {
     .addCase(logout, (state) => {
       state.authorizationStatus = AuthorizationStatus.NoAuth;
       state.userEmail = null;
+    })
+    .addCase(fetchOfferDetails.pending, (state) => {
+      state.isOfferLoading = true;
+    })
+    .addCase(fetchOfferDetails.fulfilled, (state, action) => {
+      state.offerDetails = action.payload;
+      state.isOfferLoading = false;
+    })
+    .addCase(fetchOfferDetails.rejected, (state) => {
+      state.isOfferLoading = false;
+      state.offerDetails = null;
+    })
+    .addCase(fetchNearbyOffers.fulfilled, (state, action) => {
+      state.nearbyOffers = action.payload;
+    })
+    .addCase(fetchComments.fulfilled, (state, action) => {
+      state.comments = action.payload;
+    })
+    .addCase(postComment.fulfilled, (state, action) => {
+      state.comments.push(action.payload);
     });
 });

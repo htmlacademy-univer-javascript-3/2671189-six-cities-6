@@ -1,10 +1,19 @@
 import { useState, FormEvent } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { postComment } from '../../store/action';
 
-function ReviewForm(): JSX.Element {
+type ReviewFormProps = {
+  offerId: string;
+};
+
+function ReviewForm({ offerId }: ReviewFormProps): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState({
     rating: 0,
     review: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRatingChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -22,11 +31,26 @@ function ReviewForm(): JSX.Element {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    // Form submission logic will be added later
+    setIsSubmitting(true);
 
+    dispatch(postComment({
+      offerId,
+      comment: formData.review,
+      rating: formData.rating
+    }))
+      .unwrap()
+      .then(() => {
+        setFormData({ rating: 0, review: '' });
+      })
+      .catch(() => {
+        // Handle error if needed
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
-  const isSubmitDisabled = formData.rating === 0 || formData.review.length < 50;
+  const isSubmitDisabled = formData.rating === 0 || formData.review.length < 50 || formData.review.length > 300 || isSubmitting;
 
   return (
     <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmit}>
@@ -69,7 +93,7 @@ function ReviewForm(): JSX.Element {
           type="submit"
           disabled={isSubmitDisabled}
         >
-          Submit
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
       </div>
     </form>

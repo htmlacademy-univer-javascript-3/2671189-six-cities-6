@@ -1,22 +1,21 @@
 import Review from '../review/review';
-import { Review as ReviewType } from '../../mocks/reviews';
+import { Review as ReviewType } from '../../types/offer';
 
 type ReviewsListProps = {
   reviews: ReviewType[];
 };
 
 function ReviewsList({ reviews }: ReviewsListProps): JSX.Element {
+  const sortedReviews = [...reviews]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 10);
+
   return (
-    <section className="offer__reviews reviews">
-      <h2 className="reviews__title">
-        Reviews &middot; <span className="reviews__amount">{reviews.length}</span>
-      </h2>
-      <ul className="reviews__list">
-        {reviews.map((review) => (
-          <Review key={review.id} review={review} />
-        ))}
-      </ul>
-    </section>
+    <ul className="reviews__list">
+      {sortedReviews.map((review) => (
+        <Review key={review.id} review={review} />
+      ))}
+    </ul>
   );
 }
 

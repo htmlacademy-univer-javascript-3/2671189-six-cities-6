@@ -1,6 +1,6 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
-import { Offer } from '../types/offer';
+import { Offer, OfferDetailed, Review } from '../types/offer';
 import { AuthorizationStatus, SortType } from '../const';
 
 export const changeCity = createAction<string>('city/change');
@@ -38,3 +38,39 @@ export const logout = createAction('user/logout', () => {
   localStorage.removeItem('six-cities-token');
   return { payload: undefined };
 });
+
+export const fetchOfferDetails = createAsyncThunk<OfferDetailed, string, { extra: AxiosInstance }>(
+  'offer/fetchDetails',
+  async (offerId, { extra: api }) => {
+    const { data } = await api.get<OfferDetailed>(`/offers/${offerId}`);
+    return data;
+  }
+);
+
+export const fetchNearbyOffers = createAsyncThunk<Offer[], string, { extra: AxiosInstance }>(
+  'offer/fetchNearby',
+  async (offerId, { extra: api }) => {
+    const { data } = await api.get<Offer[]>(`/offers/${offerId}/nearby`);
+    return data;
+  }
+);
+
+export const fetchComments = createAsyncThunk<Review[], string, { extra: AxiosInstance }>(
+  'comments/fetch',
+  async (offerId, { extra: api }) => {
+    const { data } = await api.get<Review[]>(`/comments/${offerId}`);
+    return data;
+  }
+);
+
+export const postComment = createAsyncThunk<
+  Review,
+  { offerId: string; comment: string; rating: number },
+  { extra: AxiosInstance }
+>(
+  'comments/post',
+  async ({ offerId, comment, rating }, { extra: api }) => {
+    const { data } = await api.post<Review>(`/comments/${offerId}`, { comment, rating });
+    return data;
+  }
+);
