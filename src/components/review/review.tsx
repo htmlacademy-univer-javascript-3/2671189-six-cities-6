@@ -1,4 +1,4 @@
-import { Review as ReviewType } from '../../mocks/reviews';
+import { Review as ReviewType } from '../../types/offer';
 
 type ReviewProps = {
   review: ReviewType;
@@ -16,13 +16,13 @@ function Review({ review }: ReviewProps): JSX.Element {
         <div className="reviews__avatar-wrapper user__avatar-wrapper">
           <img
             className="reviews__avatar user__avatar"
-            src={review.avatarUrl}
+            src={review.user.avatarUrl}
             width="54"
             height="54"
             alt="Reviews avatar"
           />
         </div>
-        <span className="reviews__user-name">{review.userName}</span>
+        <span className="reviews__user-name">{review.user.name}</span>
       </div>
       <div className="reviews__info">
         <div className="reviews__rating rating">
