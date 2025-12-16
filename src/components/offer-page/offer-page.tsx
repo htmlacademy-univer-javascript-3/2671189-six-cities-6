@@ -1,6 +1,6 @@
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import ReviewsList from '../reviews-list/reviews-list';
 import ReviewForm from '../review-form/review-form';
 import Map from '../map/map';
@@ -8,7 +8,8 @@ import OffersList from '../offers-list/offers-list';
 import Spinner from '../spinner/spinner';
 import { RootState, AppDispatch } from '../../store';
 import { fetchOfferDetails, fetchNearbyOffers, fetchComments } from '../../store/action';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute } from '../../const';
+import { selectIsAuthenticated } from '../../store/selectors';
 
 function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +19,7 @@ function OfferPage(): JSX.Element {
   const nearbyOffers = useSelector((state: RootState) => state.nearbyOffers);
   const comments = useSelector((state: RootState) => state.comments);
   const isOfferLoading = useSelector((state: RootState) => state.isOfferLoading);
-  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
     if (id) {
@@ -27,6 +28,11 @@ function OfferPage(): JSX.Element {
       dispatch(fetchComments(id));
     }
   }, [dispatch, id]);
+
+  const mapOffers = useMemo(
+    () => (offerDetails ? [...nearbyOffers, offerDetails] : []),
+    [nearbyOffers, offerDetails]
+  );
 
   if (isOfferLoading) {
     return <Spinner />;
@@ -39,8 +45,6 @@ function OfferPage(): JSX.Element {
   if (!offerDetails) {
     return null;
   }
-
-  const isAuthenticated = authorizationStatus === AuthorizationStatus.Auth;
 
   return (
     <div className="page">
@@ -130,7 +134,7 @@ function OfferPage(): JSX.Element {
             </div>
           </div>
           <section className="offer__map map">
-            <Map offers={[...nearbyOffers, offerDetails]} center={offerDetails.city.location} activeOfferId={offerDetails.id} />
+            <Map offers={mapOffers} center={offerDetails.city.location} activeOfferId={offerDetails.id} />
           </section>
         </section>
 

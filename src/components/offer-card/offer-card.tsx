@@ -1,15 +1,17 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Offer } from '../../types/offer';
 
 type OfferCardProps = {
   offer: Offer;
-  onMouseEnter?: (id: string) => void;
-  onMouseLeave?: () => void;
+  isActive: boolean;
+  onMouseEnter: (id: string) => void;
+  onMouseLeave: () => void;
 }
 
-function OfferCard({ offer, onMouseEnter, onMouseLeave, isActive }: OfferCardProps & { isActive: boolean }): JSX.Element {
+function OfferCardComponent({ offer, onMouseEnter, onMouseLeave, isActive }: OfferCardProps): JSX.Element {
   const handleMouseEnter = () => {
-    onMouseEnter?.(offer.id);
+    onMouseEnter(offer.id);
   };
 
   return (
@@ -66,4 +68,5 @@ function OfferCard({ offer, onMouseEnter, onMouseLeave, isActive }: OfferCardPro
   );
 }
 
+const OfferCard = memo(OfferCardComponent);
 export default OfferCard;
