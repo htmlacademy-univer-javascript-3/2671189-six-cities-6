@@ -1,3 +1,4 @@
+import { memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { changeCity } from '../../store/action';
 
@@ -7,9 +8,11 @@ type CitiesListProps = {
   currentCity: string;
 };
 
-function CitiesList({ currentCity }: CitiesListProps): JSX.Element {
+function CitiesListComponent({ currentCity }: CitiesListProps): JSX.Element {
   const dispatch = useDispatch();
-
+  const handleCityClick = useCallback((city: string) => {
+    dispatch(changeCity(city));
+  }, [dispatch]);
   return (
     <div className="tabs">
       <section className="locations container">
@@ -21,7 +24,7 @@ function CitiesList({ currentCity }: CitiesListProps): JSX.Element {
                 href="#"
                 onClick={(evt) => {
                   evt.preventDefault();
-                  dispatch(changeCity(city));
+                  handleCityClick(city);
                 }}
               >
                 <span>{city}</span>
@@ -33,5 +36,7 @@ function CitiesList({ currentCity }: CitiesListProps): JSX.Element {
     </div>
   );
 }
+
+const CitiesList = memo(CitiesListComponent);
 
 export default CitiesList;
