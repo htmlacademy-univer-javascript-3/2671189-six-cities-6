@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { SortType } from '../../const';
 import { changeSortType } from '../../store/action';
@@ -14,14 +14,14 @@ const SORT_OPTIONS = [
   SortType.TopRatedFirst,
 ];
 
-function SortOptions({ currentSort }: SortOptionsProps): JSX.Element {
+function SortOptionsComponent({ currentSort }: SortOptionsProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSortClick = (sortType: SortType) => {
+  const handleSortClick = useCallback((sortType: SortType) => {
     dispatch(changeSortType(sortType));
     setIsOpen(false);
-  };
+  }, [dispatch]);
 
   return (
     <form className="places__sorting" action="#" method="get">
@@ -52,4 +52,5 @@ function SortOptions({ currentSort }: SortOptionsProps): JSX.Element {
   );
 }
 
+const SortOptions = memo(SortOptionsComponent);
 export default SortOptions;

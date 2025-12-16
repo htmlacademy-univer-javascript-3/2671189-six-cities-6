@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import OfferCard from '../offer-card/offer-card';
@@ -7,27 +7,32 @@ import Spinner from '../spinner/spinner';
 import CitiesList from '../cities-list/cities-list';
 import SortOptions from '../sort-options/sort-options';
 import { RootState, AppDispatch } from '../../store';
-import { sortOffers } from '../../utils/sort';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute } from '../../const';
 import { logout } from '../../store/action';
+import { selectSortedOffers, selectCityLocation, selectIsAuthenticated } from '../../store/selectors';
 
 function MainPage(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
   const city = useSelector((state: RootState) => state.city);
-  const offers = useSelector((state: RootState) => state.offers);
   const sortType = useSelector((state: RootState) => state.sortType);
   const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
-  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
   const userEmail = useSelector((state: RootState) => state.userEmail);
+  const sortedOffers = useSelector(selectSortedOffers);
+  const cityLocation = useSelector(selectCityLocation);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
-  const filteredOffers = offers.filter((offer) => offer.city.name === city);
-  const sortedOffers = sortOffers(filteredOffers, sortType);
-  const cityLocation = sortedOffers[0]?.city.location;
-
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(logout());
-  };
+  }, [dispatch]);
+
+  const handleMouseEnter = useCallback((id: string) => {
+    setActiveOfferId(id);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setActiveOfferId(null);
+  }, []);
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -40,7 +45,7 @@ function MainPage(): JSX.Element {
             </div>
             <nav className="header__nav">
               <ul className="header__nav-list">
-                {authorizationStatus === AuthorizationStatus.Auth ? (
+                {isAuthenticated ? (
                   <>
                     <li className="header__nav-item user">
                       <Link className="header__nav-link header__nav-link--profile" to={AppRoute.Favorites}>
@@ -93,8 +98,8 @@ function MainPage(): JSX.Element {
                       key={offer.id}
                       offer={offer}
                       isActive={activeOfferId === offer.id}
-                      onMouseEnter={() => setActiveOfferId(offer.id)}
-                      onMouseLeave={() => setActiveOfferId(null)}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
                     />
                   ))}
                 </div>

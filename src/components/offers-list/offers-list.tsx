@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import OfferCard from '../offer-card/offer-card';
 import { Offer } from '../../mocks/offers';
 
@@ -6,20 +6,16 @@ type OffersListProps = {
   offers: Offer[];
 }
 
-function OffersList({ offers }: OffersListProps): JSX.Element {
+function OffersListComponent({ offers }: OffersListProps): JSX.Element {
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
-
-  const handleMouseEnter = (id: string) => {
+  const handleMouseEnter = useCallback((id: string) => {
     setActiveOfferId(id);
+  }, []);
 
-  };
-
-
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setActiveOfferId(null);
-
-  };
+  }, []);
 
   return (
     <div className="cities__places-list places__list tabs__content">
@@ -35,5 +31,7 @@ function OffersList({ offers }: OffersListProps): JSX.Element {
     </div>
   );
 }
+
+const OffersList = memo(OffersListComponent);
 
 export default OffersList;
