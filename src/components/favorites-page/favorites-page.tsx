@@ -1,15 +1,33 @@
 
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useCallback } from 'react';
+import { RootState, AppDispatch } from '../../store';
 import { AppRoute } from '../../const';
+import { fetchFavorites, logout, toggleFavorite } from '../../store/action';
 
 function FavoritesPage(): JSX.Element {
-  const offers = useSelector((state: RootState) => state.offers);
-  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
+  const dispatch = useDispatch<AppDispatch>();
+  const favoriteOffers = useSelector((state: RootState) => state.favoriteOffers);
+  const userEmail = useSelector((state: RootState) => state.userEmail);
+
+  useEffect(() => {
+    dispatch(fetchFavorites());
+  }, [dispatch]);
+
+  const handleLogout = useCallback(() => {
+    dispatch(logout());
+  }, [dispatch]);
+
+  const handleFavoriteClick = useCallback((offerId: string, isFavorite: boolean) => {
+    dispatch(toggleFavorite({
+      offerId,
+      status: isFavorite ? 0 : 1
+    }));
+  }, [dispatch]);
 
   // Group favorites by city
-  const favoritesByCity: { [city: string]: typeof offers } = {};
+  const favoritesByCity: { [city: string]: typeof favoriteOffers } = {};
   favoriteOffers.forEach((offer) => {
     if (!favoritesByCity[offer.city.name]) {
       favoritesByCity[offer.city.name] = [];
@@ -30,17 +48,17 @@ function FavoritesPage(): JSX.Element {
             <nav className="header__nav">
               <ul className="header__nav-list">
                 <li className="header__nav-item user">
-                  <Link className="header__nav-link header__nav-link--profile" to="#">
+                  <Link className="header__nav-link header__nav-link--profile" to={AppRoute.Favorites}>
                     <div className="header__avatar-wrapper user__avatar-wrapper">
                     </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                    <span className="header__user-name user__name">{userEmail}</span>
                     <span className="header__favorite-count">{favoriteOffers.length}</span>
                   </Link>
                 </li>
                 <li className="header__nav-item">
-                  <Link className="header__nav-link" to="#">
+                  <a className="header__nav-link" href="#" onClick={handleLogout}>
                     <span className="header__signout">Sign out</span>
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -48,12 +66,20 @@ function FavoritesPage(): JSX.Element {
         </div>
       </header>
 
-      <main className="page__main page__main--favorites">
+      <main className={`page__main page__main--favorites ${favoriteOffers.length === 0 ? 'page__main--favorites-empty' : ''}`}>
         <div className="page__favorites-container container">
-          <section className="favorites">
-            <h1 className="favorites__title">Saved listing</h1>
-            <ul className="favorites__list">
-              {Object.entries(favoritesByCity).map(([city, cityOffers]) => (
+          {favoriteOffers.length === 0 ? (
+            <section className="favorites favorites--empty">
+              <h1 className="visually-hidden">Favorites (empty)</h1>
+              <div className="favorites__status-wrapper">
+                <b className="favorites__status">Nothing yet saved.</b>
+                <p className="favorites__status-description">Save properties to narrow down search or plan your future trips.</p>
+              </div>
+            </section>
+          ) : (
+            <section className="favorites">
+              <h1 className="favorites__title">Saved listing</h1>
+              <ul className="favorites__list">{Object.entries(favoritesByCity).map(([city, cityOffers]) => (
                 <li key={city} className="favorites__locations-items">
                   <div className="favorites__locations locations locations--current">
                     <div className="locations__item">
@@ -90,6 +116,7 @@ function FavoritesPage(): JSX.Element {
                             <button
                               className={'place-card__bookmark-button place-card__bookmark-button--active button'}
                               type="button"
+                              onClick={() => handleFavoriteClick(offer.id, offer.isFavorite)}
                             >
                               <svg className="place-card__bookmark-icon" width="18" height="19">
                                 <use xlinkHref="#icon-bookmark"></use>
@@ -113,8 +140,9 @@ function FavoritesPage(): JSX.Element {
                   </div>
                 </li>
               ))}
-            </ul>
-          </section>
+              </ul>
+            </section>
+          )}
         </div>
       </main>
       <footer className="footer container">

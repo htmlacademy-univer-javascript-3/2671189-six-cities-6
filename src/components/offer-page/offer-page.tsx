@@ -1,19 +1,20 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import ReviewsList from '../reviews-list/reviews-list';
 import ReviewForm from '../review-form/review-form';
 import Map from '../map/map';
 import OffersList from '../offers-list/offers-list';
 import Spinner from '../spinner/spinner';
 import { RootState, AppDispatch } from '../../store';
-import { fetchOfferDetails, fetchNearbyOffers, fetchComments } from '../../store/action';
+import { fetchOfferDetails, fetchNearbyOffers, fetchComments, toggleFavorite } from '../../store/action';
 import { AppRoute } from '../../const';
 import { selectIsAuthenticated } from '../../store/selectors';
 
 function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const offerDetails = useSelector((state: RootState) => state.offerDetails);
   const nearbyOffers = useSelector((state: RootState) => state.nearbyOffers);
@@ -33,6 +34,22 @@ function OfferPage(): JSX.Element {
     () => (offerDetails ? [...nearbyOffers, offerDetails] : []),
     [nearbyOffers, offerDetails]
   );
+
+  const handleFavoriteClick = useCallback(() => {
+    if (!offerDetails) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      navigate(AppRoute.Login);
+      return;
+    }
+
+    dispatch(toggleFavorite({
+      offerId: offerDetails.id,
+      status: offerDetails.isFavorite ? 0 : 1
+    }));
+  }, [dispatch, navigate, isAuthenticated, offerDetails]);
 
   if (isOfferLoading) {
     return <Spinner />;
@@ -81,7 +98,11 @@ function OfferPage(): JSX.Element {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{offerDetails.title}</h1>
-                <button className={`offer__bookmark-button button ${offerDetails.isFavorite ? 'offer__bookmark-button--active' : ''}`} type="button">
+                <button
+                  className={`offer__bookmark-button button ${offerDetails.isFavorite ? 'offer__bookmark-button--active' : ''}`}
+                  type="button"
+                  onClick={handleFavoriteClick}
+                >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>

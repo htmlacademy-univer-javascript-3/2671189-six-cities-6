@@ -1,6 +1,11 @@
-import { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { memo, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Offer } from '../../types/offer';
+import { toggleFavorite } from '../../store/action';
+import { AppDispatch } from '../../store';
+import { AppRoute } from '../../const';
+import { selectIsAuthenticated } from '../../store/selectors';
 
 type OfferCardProps = {
   offer: Offer;
@@ -10,9 +15,25 @@ type OfferCardProps = {
 }
 
 function OfferCardComponent({ offer, onMouseEnter, onMouseLeave, isActive }: OfferCardProps): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
   const handleMouseEnter = () => {
     onMouseEnter(offer.id);
   };
+
+  const handleFavoriteClick = useCallback(() => {
+    if (!isAuthenticated) {
+      navigate(AppRoute.Login);
+      return;
+    }
+
+    dispatch(toggleFavorite({
+      offerId: offer.id,
+      status: offer.isFavorite ? 0 : 1
+    }));
+  }, [dispatch, navigate, isAuthenticated, offer.id, offer.isFavorite]);
 
   return (
     <article
@@ -46,6 +67,7 @@ function OfferCardComponent({ offer, onMouseEnter, onMouseLeave, isActive }: Off
           <button
             className={`place-card__bookmark-button button ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
+            onClick={handleFavoriteClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
