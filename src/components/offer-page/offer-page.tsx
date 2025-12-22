@@ -39,12 +39,12 @@ function OfferPage(): JSX.Element {
     if (!offerDetails) {
       return;
     }
-    
+
     if (!isAuthenticated) {
       navigate(AppRoute.Login);
       return;
     }
-    
+
     dispatch(toggleFavorite({
       offerId: offerDetails.id,
       status: offerDetails.isFavorite ? 0 : 1

@@ -28,7 +28,7 @@ function OfferCardComponent({ offer, onMouseEnter, onMouseLeave, isActive }: Off
       navigate(AppRoute.Login);
       return;
     }
-    
+
     dispatch(toggleFavorite({
       offerId: offer.id,
       status: offer.isFavorite ? 0 : 1

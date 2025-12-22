@@ -95,24 +95,24 @@ export const reducer = createReducer<State>(initialState, (builder) => {
     })
     .addCase(toggleFavorite.fulfilled, (state, action) => {
       const updatedOffer = action.payload;
-      
+
       // Update in offers array
       const offerIndex = state.offers.findIndex((offer) => offer.id === updatedOffer.id);
       if (offerIndex !== -1) {
         state.offers[offerIndex] = updatedOffer;
       }
-      
+
       // Update in nearbyOffers array
       const nearbyIndex = state.nearbyOffers.findIndex((offer) => offer.id === updatedOffer.id);
       if (nearbyIndex !== -1) {
         state.nearbyOffers[nearbyIndex] = updatedOffer;
       }
-      
+
       // Update in offerDetails if it's the same offer
       if (state.offerDetails && state.offerDetails.id === updatedOffer.id) {
         state.offerDetails = { ...state.offerDetails, isFavorite: updatedOffer.isFavorite };
       }
-      
+
       // Update favoriteOffers array
       if (updatedOffer.isFavorite) {
         state.favoriteOffers.push(updatedOffer);
