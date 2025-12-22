@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { changeCity, changeSortType, fetchOffers, checkAuth, login, logout, requireAuthorization, fetchOfferDetails, fetchNearbyOffers, fetchComments, postComment } from './action';
+import { changeCity, changeSortType, fetchOffers, checkAuth, login, logout, requireAuthorization, fetchOfferDetails, fetchNearbyOffers, fetchComments, postComment, toggleFavorite, fetchFavorites } from './action';
 import { Offer, OfferDetailed, Review } from '../types/offer';
 import { AuthorizationStatus, SortType } from '../const';
 
@@ -14,6 +14,7 @@ export type State = {
   nearbyOffers: Offer[];
   comments: Review[];
   isOfferLoading: boolean;
+  favoriteOffers: Offer[];
 };
 
 const initialState: State = {
@@ -27,6 +28,7 @@ const initialState: State = {
   nearbyOffers: [],
   comments: [],
   isOfferLoading: false,
+  favoriteOffers: [],
 };
 
 export const reducer = createReducer<State>(initialState, (builder) => {
@@ -87,5 +89,35 @@ export const reducer = createReducer<State>(initialState, (builder) => {
     })
     .addCase(postComment.fulfilled, (state, action) => {
       state.comments.push(action.payload);
+    })
+    .addCase(fetchFavorites.fulfilled, (state, action) => {
+      state.favoriteOffers = action.payload;
+    })
+    .addCase(toggleFavorite.fulfilled, (state, action) => {
+      const updatedOffer = action.payload;
+      
+      // Update in offers array
+      const offerIndex = state.offers.findIndex((offer) => offer.id === updatedOffer.id);
+      if (offerIndex !== -1) {
+        state.offers[offerIndex] = updatedOffer;
+      }
+      
+      // Update in nearbyOffers array
+      const nearbyIndex = state.nearbyOffers.findIndex((offer) => offer.id === updatedOffer.id);
+      if (nearbyIndex !== -1) {
+        state.nearbyOffers[nearbyIndex] = updatedOffer;
+      }
+      
+      // Update in offerDetails if it's the same offer
+      if (state.offerDetails && state.offerDetails.id === updatedOffer.id) {
+        state.offerDetails = { ...state.offerDetails, isFavorite: updatedOffer.isFavorite };
+      }
+      
+      // Update favoriteOffers array
+      if (updatedOffer.isFavorite) {
+        state.favoriteOffers.push(updatedOffer);
+      } else {
+        state.favoriteOffers = state.favoriteOffers.filter((offer) => offer.id !== updatedOffer.id);
+      }
     });
 });

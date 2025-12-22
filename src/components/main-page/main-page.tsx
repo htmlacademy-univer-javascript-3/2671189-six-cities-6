@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import OfferCard from '../offer-card/offer-card';
@@ -6,9 +6,10 @@ import Map from '../map/map';
 import Spinner from '../spinner/spinner';
 import CitiesList from '../cities-list/cities-list';
 import SortOptions from '../sort-options/sort-options';
+import MainEmptyPage from '../main-empty-page/main-empty-page';
 import { RootState, AppDispatch } from '../../store';
 import { AppRoute } from '../../const';
-import { logout } from '../../store/action';
+import { logout, fetchFavorites } from '../../store/action';
 import { selectSortedOffers, selectCityLocation, selectIsAuthenticated } from '../../store/selectors';
 
 function MainPage(): JSX.Element {
@@ -17,10 +18,17 @@ function MainPage(): JSX.Element {
   const sortType = useSelector((state: RootState) => state.sortType);
   const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
   const userEmail = useSelector((state: RootState) => state.userEmail);
+  const favoriteOffers = useSelector((state: RootState) => state.favoriteOffers);
   const sortedOffers = useSelector(selectSortedOffers);
   const cityLocation = useSelector(selectCityLocation);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchFavorites());
+    }
+  }, [dispatch, isAuthenticated]);
 
   const handleLogout = useCallback(() => {
     dispatch(logout());
@@ -52,7 +60,7 @@ function MainPage(): JSX.Element {
                         <div className="header__avatar-wrapper user__avatar-wrapper">
                         </div>
                         <span className="header__user-name user__name">{userEmail}</span>
-                        <span className="header__favorite-count">3</span>
+                        <span className="header__favorite-count">{favoriteOffers.length}</span>
                       </Link>
                     </li>
                     <li className="header__nav-item">
@@ -84,9 +92,14 @@ function MainPage(): JSX.Element {
           </section>
         </div>
         <div className="cities">
-          {isOffersLoading ? (
-            <Spinner />
-          ) : (
+          {isOffersLoading && <Spinner />}
+          {!isOffersLoading && sortedOffers.length === 0 && (
+            <div className="cities__places-container cities__places-container--empty container">
+              <MainEmptyPage city={city} />
+              <div className="cities__right-section"></div>
+            </div>
+          )}
+          {!isOffersLoading && sortedOffers.length > 0 && (
             <div className="cities__places-container container">
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
@@ -116,3 +129,4 @@ function MainPage(): JSX.Element {
 }
 
 export default MainPage;
+
