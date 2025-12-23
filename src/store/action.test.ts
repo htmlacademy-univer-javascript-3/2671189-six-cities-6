@@ -29,9 +29,11 @@ async function runThunk<Returned, Arg>(
 }
 
 function findFulfilled(mockDispatch: ReturnType<typeof vi.fn<(action: AppAction) => void>>) {
-  return mockDispatch.mock.calls.find(([action]) => action.type.endsWith('/fulfilled'))?.[0] as
-    | { type: string; payload: unknown }
-    | undefined;
+  const fulfilledCall = mockDispatch.mock.calls.find(([action]) => {
+    const actionType = action && typeof action === 'object' && 'type' in action ? (action as { type: string }).type : '';
+    return actionType.endsWith('/fulfilled');
+  });
+  return fulfilledCall?.[0] as { type: string; payload: unknown } | undefined;
 }
 
 describe('async actions', () => {

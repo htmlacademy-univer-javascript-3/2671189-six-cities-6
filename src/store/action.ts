@@ -19,7 +19,7 @@ export const fetchOffers = createAsyncThunk<Offer[], undefined, { extra: AxiosIn
 export const checkAuth = createAsyncThunk<string, undefined, { extra: AxiosInstance }>(
   'user/checkAuth',
   async (_arg, { extra: api }) => {
-    const { data } = await api.get('/login');
+    const { data } = await api.get<{ email: string }>('/login');
     return data.email;
   }
 );
@@ -27,7 +27,7 @@ export const checkAuth = createAsyncThunk<string, undefined, { extra: AxiosInsta
 export const login = createAsyncThunk<string, { email: string; password: string }, { extra: AxiosInstance }>(
   'user/login',
   async ({ email, password }, { extra: api }) => {
-    const { data } = await api.post('/login', { email, password });
+    const { data } = await api.post<{ email: string; token: string }>('/login', { email, password });
     const token = data.token;
     localStorage.setItem('six-cities-token', token);
     return data.email;
