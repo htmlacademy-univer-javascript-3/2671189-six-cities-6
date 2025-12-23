@@ -16,8 +16,9 @@ import {
   fetchFavorites,
   toggleFavorite,
 } from './action';
+import type { Offer, OfferDetailed, Review } from '../types/offer';
 
-const makeOffer = (overrides: Partial<any> = {}) => ({
+const makeOffer = (overrides: Partial<Offer> = {}): Offer => ({
   id: 'id-1',
   title: 'Test offer',
   type: 'apartment',
@@ -61,7 +62,7 @@ describe('reducer', () => {
   });
 
   it('should set offers loading on fetchOffers.pending', () => {
-    const state = reducer(initial, fetchOffers.pending('req')); 
+    const state = reducer(initial, fetchOffers.pending('req'));
     expect(state.isOffersLoading).toBe(true);
   });
 
@@ -113,7 +114,15 @@ describe('reducer', () => {
   it('should handle offer details loading', () => {
     let state = reducer(initial, fetchOfferDetails.pending('req', 'id-1'));
     expect(state.isOfferLoading).toBe(true);
-    const details = { ...makeOffer(), description: 'desc', bedrooms: 2, goods: [], host: { name: 'host', isPro: false, avatarUrl: '' } } as any;
+    const details: OfferDetailed = {
+      ...makeOffer(),
+      description: 'desc',
+      bedrooms: 2,
+      goods: [],
+      host: { name: 'host', isPro: false, avatarUrl: '' },
+      images: [],
+      maxAdults: 2,
+    };
     state = reducer(state, fetchOfferDetails.fulfilled(details, 'req', 'id-1'));
     expect(state.offerDetails).toEqual(details);
     expect(state.isOfferLoading).toBe(false);
@@ -129,10 +138,18 @@ describe('reducer', () => {
   });
 
   it('should set comments and append on post', () => {
-    const comments = [{ id: 'c1', date: new Date().toISOString(), comment: 'ok', rating: 4, user: { name: 'u', avatarUrl: '', isPro: false } }];
-    let state = reducer(initial, fetchComments.fulfilled(comments as any, 'req', 'id-1'));
+    const comments: Review[] = [
+      { id: 'c1', date: new Date().toISOString(), comment: 'ok', rating: 4, user: { name: 'u', avatarUrl: '', isPro: false } },
+    ];
+    let state = reducer(initial, fetchComments.fulfilled(comments, 'req', 'id-1'));
     expect(state.comments).toEqual(comments);
-    const newComment = { id: 'c2', date: new Date().toISOString(), comment: 'new', rating: 5, user: { name: 'u2', avatarUrl: '', isPro: true } } as any;
+    const newComment: Review = {
+      id: 'c2',
+      date: new Date().toISOString(),
+      comment: 'new',
+      rating: 5,
+      user: { name: 'u2', avatarUrl: '', isPro: true },
+    };
     state = reducer(state, postComment.fulfilled(newComment, 'req', { offerId: 'id-1', comment: 'new', rating: 5 }));
     expect(state.comments).toHaveLength(2);
   });
@@ -145,7 +162,16 @@ describe('reducer', () => {
 
   it('should update state on toggleFavorite.fulfilled', () => {
     const offer = makeOffer({ id: 'o1', isFavorite: false });
-    const start = { ...initial, offers: [offer], nearbyOffers: [offer], offerDetails: { ...offer } as any };
+    const offerDetails: OfferDetailed = {
+      ...offer,
+      description: '',
+      bedrooms: 1,
+      goods: [],
+      host: { name: '', avatarUrl: '', isPro: false },
+      images: [],
+      maxAdults: 1,
+    };
+    const start = { ...initial, offers: [offer], nearbyOffers: [offer], offerDetails };
     const updated = { ...offer, isFavorite: true };
     const state = reducer(start, toggleFavorite.fulfilled(updated, 'req', { offerId: 'o1', status: 1 }));
     expect(state.offers[0].isFavorite).toBe(true);

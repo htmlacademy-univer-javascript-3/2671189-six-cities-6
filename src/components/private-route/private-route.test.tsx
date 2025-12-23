@@ -14,7 +14,7 @@ describe('PrivateRoute', () => {
     store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/priv"]}>
+        <MemoryRouter initialEntries={['/priv']}>
           <Routes>
             <Route path="/priv" element={<PrivateRoute><div>Secret</div></PrivateRoute>} />
           </Routes>
@@ -29,7 +29,7 @@ describe('PrivateRoute', () => {
     store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/priv"]}>
+        <MemoryRouter initialEntries={['/priv']}>
           <Routes>
             <Route path="/priv" element={<PrivateRoute><div>Secret</div></PrivateRoute>} />
             <Route path="/login" element={<div>Login Page</div>} />

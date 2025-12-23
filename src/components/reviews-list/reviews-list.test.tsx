@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ReviewsList from './reviews-list';
+import type { Review } from '../../types/offer';
 
-const reviews = Array.from({ length: 3 }, (_, i) => ({
+const reviews: Review[] = Array.from({ length: 3 }, (_, i) => ({
   id: `r${i}`,
   date: new Date().toISOString(),
   comment: `Comment ${i}`,
@@ -12,7 +13,7 @@ const reviews = Array.from({ length: 3 }, (_, i) => ({
 
 describe('ReviewsList', () => {
   it('renders reviews list', () => {
-    render(<ReviewsList reviews={reviews as any} />);
+    render(<ReviewsList reviews={reviews} />);
     expect(screen.getAllByText(/Comment/)).toHaveLength(3);
   });
 });
