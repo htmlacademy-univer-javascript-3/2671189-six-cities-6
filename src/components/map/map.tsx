@@ -7,7 +7,7 @@ import markerIconUrl from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2xUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-import { Offer } from '../../mocks/offers';
+import type { Offer } from '../../types/offer';
 
 type MapProps = {
   offers: Offer[];
@@ -16,7 +16,6 @@ type MapProps = {
     longitude: number;
     zoom: number;
   };
-  activeOfferId?: string | null;
 };
 
 // Create custom icon
@@ -82,7 +81,9 @@ function Map({ offers, center }: MapProps): JSX.Element {
   // Update markers and center when offers or center change
   useEffect(() => {
     const map = leafletMapRef.current;
-    if (!map || !markersLayerRef.current) return;
+    if (!map || !markersLayerRef.current) {
+      return;
+    }
 
     markersLayerRef.current.clearLayers();
 

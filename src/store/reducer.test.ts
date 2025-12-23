@@ -62,19 +62,19 @@ describe('reducer', () => {
   });
 
   it('should set offers loading on fetchOffers.pending', () => {
-    const state = reducer(initial, fetchOffers.pending('req'));
+    const state = reducer(initial, fetchOffers.pending('req', undefined));
     expect(state.isOffersLoading).toBe(true);
   });
 
   it('should fill offers on fetchOffers.fulfilled', () => {
     const offers = [makeOffer({ id: 'a' })];
-    const state = reducer(initial, fetchOffers.fulfilled(offers, 'req'));
+    const state = reducer(initial, fetchOffers.fulfilled(offers, 'req', undefined));
     expect(state.offers).toEqual(offers);
     expect(state.isOffersLoading).toBe(false);
   });
 
   it('should reset loading on fetchOffers.rejected', () => {
-    const state = reducer({ ...initial, isOffersLoading: true }, fetchOffers.rejected(new Error('e'), 'req'));
+    const state = reducer({ ...initial, isOffersLoading: true }, fetchOffers.rejected(new Error('e'), 'req', undefined));
     expect(state.isOffersLoading).toBe(false);
   });
 
@@ -84,13 +84,13 @@ describe('reducer', () => {
   });
 
   it('should set user on checkAuth.fulfilled', () => {
-    const state = reducer(initial, checkAuth.fulfilled('test@example.com', 'req'));
+    const state = reducer(initial, checkAuth.fulfilled('test@example.com', 'req', undefined));
     expect(state.authorizationStatus).toBe(AuthorizationStatus.Auth);
     expect(state.userEmail).toBe('test@example.com');
   });
 
   it('should set no auth on checkAuth.rejected', () => {
-    const state = reducer(initial, checkAuth.rejected(new Error('e'), 'req'));
+    const state = reducer(initial, checkAuth.rejected(new Error('e'), 'req', undefined));
     expect(state.authorizationStatus).toBe(AuthorizationStatus.NoAuth);
   });
 
@@ -156,7 +156,7 @@ describe('reducer', () => {
 
   it('should set favorite offers on fetchFavorites.fulfilled', () => {
     const favs = [makeOffer({ id: 'f1', isFavorite: true })];
-    const state = reducer(initial, fetchFavorites.fulfilled(favs, 'req'));
+    const state = reducer(initial, fetchFavorites.fulfilled(favs, 'req', undefined));
     expect(state.favoriteOffers).toEqual(favs);
   });
 
