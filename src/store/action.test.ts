@@ -13,25 +13,25 @@ import {
 } from './action';
 import type { AsyncThunk } from '@reduxjs/toolkit';
 
-type AppAction = { type: string; payload?: unknown };
-
 const api = createAPI();
 const mock = new MockAdapter(api);
 
 async function runThunk<Returned, Arg>(
-  thunk: AsyncThunk<Returned, Arg, { state: unknown; dispatch: unknown; extra: ReturnType<typeof createAPI> }>,
+  thunk: AsyncThunk<Returned, Arg, { extra: ReturnType<typeof createAPI> }>,
   arg?: Arg
 ) {
-  const dispatch = vi.fn<(action: AppAction) => void>();
+  const dispatch = vi.fn<unknown[], unknown>();
   const getState = vi.fn();
-  await thunk(arg as Arg)(dispatch as unknown as (action: AppAction) => void, getState, api);
+  await thunk(arg as Arg)(dispatch, getState, api);
   return dispatch;
 }
 
-function findFulfilled(mockDispatch: ReturnType<typeof vi.fn<(action: AppAction) => void>>) {
-  return mockDispatch.mock.calls.find(([action]) => action.type.endsWith('/fulfilled'))?.[0] as
-    | { type: string; payload: unknown }
-    | undefined;
+function findFulfilled(mockDispatch: ReturnType<typeof vi.fn<unknown[], unknown>>) {
+  const fulfilledCall = mockDispatch.mock.calls.find(([action]) => {
+    const actionType = action && typeof action === 'object' && 'type' in action ? (action as { type: string }).type : '';
+    return actionType.endsWith('/fulfilled');
+  });
+  return fulfilledCall?.[0] as { type: string; payload: unknown } | undefined;
 }
 
 describe('async actions', () => {

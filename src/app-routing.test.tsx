@@ -19,7 +19,7 @@ describe('App routing', () => {
   it('renders not found on unknown route', () => {
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/unknown"]}>
+        <MemoryRouter initialEntries={['/unknown']}>
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -36,7 +36,7 @@ describe('App routing', () => {
   it('redirects favorites to login when unauthorized', () => {
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/favorites"]}>
+        <MemoryRouter initialEntries={['/favorites']}>
           <Routes>
             <Route path="/favorites" element={<PrivateRoute><FavoritesPage /></PrivateRoute>} />
             <Route path="/login" element={<div>Login Page</div>} />

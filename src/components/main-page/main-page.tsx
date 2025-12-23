@@ -118,7 +118,7 @@ function MainPage(): JSX.Element {
                 </div>
               </section>
               <div className="cities__right-section">
-                {cityLocation && <Map offers={sortedOffers} center={cityLocation} activeOfferId={activeOfferId} />}
+                {cityLocation && <Map offers={sortedOffers} center={cityLocation} />}
               </div>
             </div>
           )}

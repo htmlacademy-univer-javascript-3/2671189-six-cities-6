@@ -60,7 +60,7 @@ function OfferPage(): JSX.Element {
   }
 
   if (!offerDetails) {
-    return null;
+    return <Spinner />;
   }
 
   return (
@@ -155,7 +155,7 @@ function OfferPage(): JSX.Element {
             </div>
           </div>
           <section className="offer__map map">
-            <Map offers={mapOffers} center={offerDetails.city.location} activeOfferId={offerDetails.id} />
+            <Map offers={mapOffers} center={offerDetails.city.location} />
           </section>
         </section>
 
