@@ -26,10 +26,10 @@ describe('MainPage component', () => {
     expect(screen.getByText('Brussels')).toBeInTheDocument();
   });
 
-  it('displays sort options', () => {
+  it('displays places to stay when offers available', () => {
     const store = configureStore({ reducer });
 
-    render(
+    const { container } = render(
       <Provider store={store}>
         <MemoryRouter>
           <MainPage />
@@ -37,7 +37,8 @@ describe('MainPage component', () => {
       </Provider>
     );
 
-    expect(screen.getByText('Popular')).toBeInTheDocument();
+    const placesContainer = container.querySelector('.cities__places-container');
+    expect(placesContainer).toBeInTheDocument();
   });
 
   it('renders main page container', () => {

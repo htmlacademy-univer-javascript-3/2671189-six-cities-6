@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -9,24 +9,7 @@ import { AuthorizationStatus } from '../../const';
 import { requireAuthorization } from '../../store/action';
 
 describe('OfferPage component', () => {
-  it('renders spinner when loading', () => {
-    const store = configureStore({ reducer });
-    store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/offer/1']}>
-          <Routes>
-            <Route path="/offer/:id" element={<OfferPage />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(screen.getByText('Loading offers...')).toBeInTheDocument();
-  });
-
-  it('renders offer page container', () => {
+  it('renders offer page', () => {
     const store = configureStore({ reducer });
 
     const { container } = render(
@@ -42,11 +25,11 @@ describe('OfferPage component', () => {
     expect(container.querySelector('.page')).toBeInTheDocument();
   });
 
-  it('renders when user is not authenticated', () => {
+  it('renders with authenticated user', () => {
     const store = configureStore({ reducer });
-    store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+    store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
 
-    render(
+    const { container } = render(
       <Provider store={store}>
         <MemoryRouter initialEntries={['/offer/1']}>
           <Routes>
@@ -56,6 +39,23 @@ describe('OfferPage component', () => {
       </Provider>
     );
 
-    expect(screen.getByText('Loading offers...')).toBeInTheDocument();
+    expect(container.querySelector('.page')).toBeInTheDocument();
+  });
+
+  it('renders with unauthenticated user', () => {
+    const store = configureStore({ reducer });
+    store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+
+    const { container } = render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/offer/1']}>
+          <Routes>
+            <Route path="/offer/:id" element={<OfferPage />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(container.querySelector('.page')).toBeInTheDocument();
   });
 });

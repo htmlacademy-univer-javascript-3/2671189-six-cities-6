@@ -7,7 +7,7 @@ import LoginPage from './login-page';
 import { reducer } from '../../store/reducer';
 
 describe('LoginPage component', () => {
-  it('renders login form', () => {
+  it('renders login form with email and password inputs', () => {
     const store = configureStore({ reducer });
 
     render(
@@ -18,8 +18,8 @@ describe('LoginPage component', () => {
       </Provider>
     );
 
-    expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
   });
 
   it('displays sign in button', () => {

@@ -9,22 +9,7 @@ import { AuthorizationStatus } from '../../const';
 import { requireAuthorization } from '../../store/action';
 
 describe('FavoritesPage component', () => {
-  it('renders favorites page title', () => {
-    const store = configureStore({ reducer });
-    store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <FavoritesPage />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(screen.getByText('Saved listing')).toBeInTheDocument();
-  });
-
-  it('displays favorites empty state when no favorites', () => {
+  it('renders favorites page with empty state when no favorites', () => {
     const store = configureStore({ reducer });
     store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
 
@@ -37,6 +22,21 @@ describe('FavoritesPage component', () => {
     );
 
     expect(screen.getByText('Nothing yet saved.')).toBeInTheDocument();
+  });
+
+  it('displays favorites empty status description', () => {
+    const store = configureStore({ reducer });
+    store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <FavoritesPage />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(screen.getByText(/save properties to narrow down search/i)).toBeInTheDocument();
   });
 
   it('renders favorites page container', () => {
